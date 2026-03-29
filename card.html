@@ -1,114 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 800px;
-    height: 250px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-}
+    /* CRITICAL FIXES FOR FULL FLUSH FIT & CENTERING */
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%; /* Use 100% of the viewport/canvas */
+        height: 100%; /* Use 100% of the viewport/canvas */
+        display: flex;
+        justify-content: center; /* Horizontally center the card contents */
+        align-items: center; /* Vertically center the card contents */
+        background: #2c2f33; /* Make the canvas background match the card background */
+        overflow: hidden; /* Absolutely ensure no scrollbars/whitespace bleed */
+    }
 
-.card {
-    width: 800px;
-    height: 250px;
-    background: #2c2f33;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
+    .card {
+        /* The card must now expand to fill the available space, 
+           or be sized to precisely match the capture area. 
+           We will use percentages and max-sizing for flexibility,
+           but if your bot takes an 800x250 shot, this fills it perfectly. */
+        width: 100vw; /* Viewport width */
+        height: 100vh; /* Viewport height */
+        max-width: 800px; /* Maximum desired size */
+        max-height: 250px; /* Maximum desired size */
+        
+        background: #2c2f33; /* Dark background */
+        border-radius: 20px; /* Keep the rounded look */
+        display: flex;
+        align-items: center;
+        padding: 0 40px; /* Clean padding */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+        position: relative; /* Needed for absolute positioning of children */
+        overflow: hidden;
+        box-sizing: border-box; /* Crucial for padding/border calculation */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Adds depth */
+    }
 
-.right {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 150px;
-    height: 100%;
-    background: #2ec4b6;
-    clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
-}
+    /* The Slanted Teal Block */
+    .right-decoration {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 25%; /* Responsive width */
+        height: 100%;
+        background: #2ec4b6;
+        /* Adjusted polygon for a sharper slant */
+        clip-path: polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%);
+        z-index: 1; /* Lowest layer */
+    }
 
-.avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-right: 20px;
-}
+    .avatar-container {
+        position: relative;
+        z-index: 2; /* Layer above decoration */
+        margin-right: 30px;
+    }
 
-.info {
-    flex: 1;
-}
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid #fff; /* White border for contrast */
+        object-fit: cover;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
 
-.name {
-    font-size: 24px;
-    font-weight: bold;
-}
+    .info {
+        flex: 1; /* Occupies the remaining space */
+        z-index: 2; /* Layer above decoration */
+        max-width: 55%; /* Prevents text collision with teal block */
+    }
 
-.tier {
-    font-size: 14px;
-    opacity: 0.7;
-}
+    .name {
+        font-size: 34px;
+        font-weight: 800; /* Extra bold */
+        margin-bottom: 2px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
 
-.aura {
-    font-size: 14px;
-    margin-top: 5px;
-}
+    .tier {
+        font-size: 16px;
+        color: #fff;
+        font-weight: 600;
+        opacity: 0.9;
+    }
 
-.bar {
-    margin-top: 15px;
-    width: 100%;
-    height: 15px;
-    background: #111;
-    border-radius: 10px;
-    overflow: hidden;
-}
+    .aura {
+        font-size: 16px;
+        margin-top: 4px;
+        color: #2ec4b6; /* Teal accent text */
+        font-weight: bold;
+    }
 
-.fill {
-    height: 100%;
-    background: #2ec4b6;
-    width: 0%;
-}
+    /* The Progress Bar */
+    .bar-container {
+        margin-top: 25px;
+        width: 100%;
+        height: 14px;
+        background: #111; /* Dark track */
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .fill {
+        height: 100%;
+        background: #2ec4b6; /* Teal fill */
+        border-radius: 12px;
+        width: 0%; /* Start empty, filled by JS */
+        transition: width 0.6s ease-out; /* Smooth fill animation */
+    }
 </style>
 </head>
-
 <body>
 
 <div class="card">
-    <img class="avatar" id="avatar">
+    <div class="avatar-container">
+        <img class="avatar" id="avatar" src="https://via.placeholder.com/100" alt="Avatar">
+    </div>
 
     <div class="info">
-        <div class="name" id="name"></div>
-        <div class="tier" id="tier"></div>
-        <div class="aura" id="aura"></div>
+        <div class="name" id="name">tarun_fx</div>
+        <div class="tier" id="tier">Tier: Charge I ⚡⚡</div>
+        <div class="aura" id="aura">Aura: 304</div>
 
-        <div class="bar">
+        <div class="bar-container">
             <div class="fill" id="progress"></div>
         </div>
     </div>
 
-    <div class="right"></div>
+    <div class="right-decoration"></div>
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-
-document.getElementById("name").innerText = params.get("name");
-document.getElementById("tier").innerText = "Tier: " + params.get("tier");
-document.getElementById("aura").innerText = "Aura: " + params.get("aura");
-document.getElementById("avatar").src = params.get("avatar");
-
-let progress = params.get("progress");
-document.getElementById("progress").style.width = progress + "%";
+    // Example: Dynamically set progress to 75%
+    // In your bot, you would replace '75' with your real value.
+    setTimeout(() => {
+        document.getElementById("progress").style.width = "75%";
+    }, 500); // 0.5s delay for effect
 </script>
 
 </body>
