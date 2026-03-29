@@ -1,75 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <style>
-    body {
-        margin: 0;
-        background: transparent;
-    }
+body {
+    margin: 0;
+    background: transparent;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    width: 800px;
+    height: 220px;
+    background: #2c2f33;
+    border-radius: 15px;
+    display: flex;
+    overflow: hidden;
+}
+
+.left {
+    flex: 1;
+    padding: 20px;
+    color: white;
+}
+
+.right {
+    width: 200px;
+    background: #2aa9a9;
+    clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 15px;
+}
+
+.name {
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+.stats {
+    margin-top: 5px;
+    color: #ccc;
+}
+
+.bar {
+    margin-top: 25px;
+    width: 100%;
+    height: 18px;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background: #2aa9a9;
+    width: 0%;
+}
 </style>
 </head>
+
 <body>
-<canvas id="card" width="1000" height="350"></canvas>
+<div class="card">
+    <div class="left">
+        <img id="avatar" class="avatar">
+        
+        <div class="name" id="name"></div>
+        <div class="stats" id="tier"></div>
+        <div class="stats" id="aura"></div>
+
+        <div class="bar">
+            <div class="fill" id="fill"></div>
+        </div>
+    </div>
+
+    <div class="right"></div>
+</div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
+const p = new URLSearchParams(window.location.search);
 
-const username = params.get("name") || "User";
-const aura = params.get("aura") || "0";
-const tier = params.get("tier") || "Spark";
-const progress = parseFloat(params.get("progress") || "0.3");
+document.getElementById("name").innerText = p.get("name");
+document.getElementById("tier").innerText = "Tier: " + p.get("tier");
+document.getElementById("aura").innerText = "Aura: " + p.get("aura");
+document.getElementById("avatar").src = p.get("avatar");
 
-const canvas = document.getElementById("card");
-const ctx = canvas.getContext("2d");
+let progress = parseInt(p.get("progress")) || 0;
+if (progress > 100) progress = 100;
 
-// BACKGROUND
-let grad = ctx.createLinearGradient(0,0,1000,350);
-grad.addColorStop(0,"#0b0f2a");
-grad.addColorStop(1,"#001f3f");
-ctx.fillStyle = grad;
-ctx.fillRect(0,0,1000,350);
-
-// GLOW SETTINGS
-ctx.shadowColor = "#00f7ff";
-ctx.shadowBlur = 25;
-
-// BIG AURA TEXT
-ctx.fillStyle = "#ffffff";
-ctx.font = "bold 70px Arial";
-ctx.fillText("+" + aura, 600, 120);
-
-ctx.font = "25px Arial";
-ctx.fillStyle = "#00f7ff";
-ctx.fillText("AURA", 610, 160);
-
-// USERNAME
-ctx.shadowBlur = 0;
-ctx.fillStyle = "#ffffff";
-ctx.font = "28px Arial";
-ctx.fillText(username, 120, 90);
-
-// TIER
-ctx.fillStyle = "#00f7ff";
-ctx.font = "20px Arial";
-ctx.fillText(tier, 120, 130);
-
-// PROGRESS BAR BG
-ctx.fillStyle = "#111";
-ctx.fillRect(120, 250, 760, 25);
-
-// PROGRESS BAR FILL
-ctx.shadowColor = "#00f7ff";
-ctx.shadowBlur = 20;
-ctx.fillStyle = "#00eaff";
-ctx.fillRect(120, 250, 760 * progress, 25);
-
-// % TEXT
-ctx.shadowBlur = 0;
-ctx.fillStyle = "#fff";
-ctx.font = "18px Arial";
-ctx.fillText(Math.floor(progress * 100) + "%", 900, 270);
-
+document.getElementById("fill").style.width = progress + "%";
 </script>
 </body>
 </html>
