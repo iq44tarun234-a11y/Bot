@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+    body {
+        margin: 0;
+        background: transparent;
+    }
+</style>
+</head>
+<body>
+<canvas id="card" width="1000" height="350"></canvas>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const username = params.get("name") || "User";
+const aura = params.get("aura") || "0";
+const tier = params.get("tier") || "Spark";
+const progress = parseFloat(params.get("progress") || "0.3");
+
+const canvas = document.getElementById("card");
+const ctx = canvas.getContext("2d");
+
+// BACKGROUND
+let grad = ctx.createLinearGradient(0,0,1000,350);
+grad.addColorStop(0,"#0b0f2a");
+grad.addColorStop(1,"#001f3f");
+ctx.fillStyle = grad;
+ctx.fillRect(0,0,1000,350);
+
+// GLOW SETTINGS
+ctx.shadowColor = "#00f7ff";
+ctx.shadowBlur = 25;
+
+// BIG AURA TEXT
+ctx.fillStyle = "#ffffff";
+ctx.font = "bold 70px Arial";
+ctx.fillText("+" + aura, 600, 120);
+
+ctx.font = "25px Arial";
+ctx.fillStyle = "#00f7ff";
+ctx.fillText("AURA", 610, 160);
+
+// USERNAME
+ctx.shadowBlur = 0;
+ctx.fillStyle = "#ffffff";
+ctx.font = "28px Arial";
+ctx.fillText(username, 120, 90);
+
+// TIER
+ctx.fillStyle = "#00f7ff";
+ctx.font = "20px Arial";
+ctx.fillText(tier, 120, 130);
+
+// PROGRESS BAR BG
+ctx.fillStyle = "#111";
+ctx.fillRect(120, 250, 760, 25);
+
+// PROGRESS BAR FILL
+ctx.shadowColor = "#00f7ff";
+ctx.shadowBlur = 20;
+ctx.fillStyle = "#00eaff";
+ctx.fillRect(120, 250, 760 * progress, 25);
+
+// % TEXT
+ctx.shadowBlur = 0;
+ctx.fillStyle = "#fff";
+ctx.font = "18px Arial";
+ctx.fillText(Math.floor(progress * 100) + "%", 900, 270);
+
+</script>
+</body>
+</html>
