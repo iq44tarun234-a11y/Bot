@@ -3,50 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <style>
-    /* 1. REMOVE ALL WHITE SPACE AROUND THE EDGE */
+    /* 1. KILL ALL EXTERNAL SPACING */
     * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
     }
 
     html, body {
-        margin: 0;
-        padding: 0;
-        width: 800px;  /* Set this to your exact desired image width */
-        height: 250px; /* Set this to your exact desired image height */
-        background: transparent; /* No white background */
+        width: 100%;
+        height: 100%;
+        background: #2c2f33; /* Matches the card color exactly */
         overflow: hidden;
-        display: block; /* Ensure it's not trying to center in a larger empty space */
+        display: flex;
     }
 
-    /* 2. MAKE THE CARD FILL THE ENTIRE 800x250 AREA */
+    /* 2. MAKE THE CARD FILL THE ENTIRE SCREEN */
     .card {
-        width: 800px;
-        height: 250px;
+        width: 100vw;  /* 100% of the Width */
+        height: 100vh; /* 100% of the Height */
         background: #2c2f33;
         display: flex;
         align-items: center;
-        padding: 0 40px;
-        font-family: 'Arial', sans-serif;
+        padding: 0 5%; /* Using % for padding makes it fit any size */
+        font-family: 'Segoe UI', Arial, sans-serif;
         color: white;
         position: relative;
-        overflow: hidden;
     }
 
-    /* THE TEAL SHAPE ON THE RIGHT */
+    /* THE TEAL SHAPE */
     .right-decoration {
         position: absolute;
         right: 0;
         top: 0;
-        width: 200px;
+        width: 30%; /* Stretches with the screen */
         height: 100%;
         background: #2ec4b6;
-        clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%);
+        clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
         z-index: 1;
     }
 
     .avatar {
-        width: 100px;
-        height: 100px;
+        width: 120px; /* Slightly bigger for better fit */
+        height: 120px;
         border-radius: 50%;
         margin-right: 30px;
         border: 4px solid #fff;
@@ -57,48 +56,50 @@
     .info {
         flex: 1;
         z-index: 2;
+        max-width: 55%;
     }
 
     .name {
-        font-size: 32px;
+        font-size: 42px; /* Increased size */
         font-weight: bold;
         margin-bottom: 5px;
     }
 
     .tier {
-        font-size: 18px;
+        font-size: 20px;
         color: #2ec4b6;
         font-weight: bold;
     }
 
     .aura {
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 5px;
-        opacity: 0.8;
+        opacity: 0.9;
     }
 
     /* THE PROGRESS BAR */
     .bar-container {
-        margin-top: 20px;
+        margin-top: 25px;
         width: 100%;
-        height: 15px;
+        height: 18px;
         background: #111;
-        border-radius: 10px;
+        border-radius: 20px;
         overflow: hidden;
     }
 
     .fill {
         height: 100%;
         background: #2ec4b6;
-        width: 0%; /* JS will change this */
-        border-radius: 10px;
+        width: 0%; 
+        border-radius: 20px;
+        transition: width 0.5s ease;
     }
 </style>
 </head>
 <body>
 
 <div class="card">
-    <img class="avatar" id="avatar" src="https://via.placeholder.com/100">
+    <img class="avatar" id="avatar" src="https://via.placeholder.com/150">
 
     <div class="info">
         <div class="name" id="name">tarun_fx</div>
@@ -114,17 +115,16 @@
 </div>
 
 <script>
-    // Get data from URL
+    // URL Parameter logic
     const params = new URLSearchParams(window.location.search);
-    
     if(params.get("name")) document.getElementById("name").innerText = params.get("name");
     if(params.get("tier")) document.getElementById("tier").innerText = "Tier: " + params.get("tier");
     if(params.get("aura")) document.getElementById("aura").innerText = "Aura: " + params.get("aura");
     if(params.get("avatar")) document.getElementById("avatar").src = params.get("avatar");
     
-    // Set progress width
-    let progress = params.get("progress") || "65"; 
-    document.getElementById("progress").style.width = progress + "%";
+    // Set width (default 65% if no param)
+    let p = params.get("progress") || "65";
+    document.getElementById("progress").style.width = p + "%";
 </script>
 
 </body>
